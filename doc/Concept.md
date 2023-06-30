@@ -42,3 +42,65 @@ K3d is a lightweight wrapper to run Kubernetes clusters in Docker, using the k3s
 
 It's important to note that while Podman offers advantages over Docker in certain areas, Docker remains a widely adopted and powerful container engine with its own strengths. The choice between Docker and Podman ultimately depends on specific use cases, preferences, and the ecosystem in which the tools will be used.
 
+
+To demonstrate the usage of k3d, we will deploy a "Hello World" application on a Kubernetes cluster created with k3d.
+
+1. Ensure that k3d and kubectl are installed on your system.
+
+2. Create a new k3d cluster using the following command:
+```
+k3d cluster create mycluster
+```
+
+3. Verify that the cluster is running by executing:
+
+```
+kubectl cluster-info
+```
+
+4. Deploy the "Hello World" application by applying the following Kubernetes manifest:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+spec:
+  selector:
+    matchLabels:
+      run: load-balancer-example
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: load-balancer-example
+    spec:
+      containers:
+        - name: hello-world
+          image: gcr.io/google-samples/node-hello:1.0
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
+```
+
+5. Save the above manifest to a file named **hello-world.yaml**, and then run the following command to deploy it:
+
+```
+kubectl apply -f hello-world-deployment.yaml
+```
+
+6. Verify that the application is running by checking the status of the pod:
+
+```
+kubectl get pods
+```
+
+7. You should see the Hello Kubernetes pod in the Running state.
+
+## Demo
+[![asciicast](https://asciinema.org/a/593892.svg)](https://asciinema.org/a/593892)
+
+
+## Conclusions
+
+After evaluating the different tools, we recommend using k3d for the Proof of Concept (PoC) in a startup environment. K3d offers a lightweight and easy-to-use solution for running Kubernetes clusters in Docker. It provides support for multi-node clusters, fast cluster creation
